@@ -33,11 +33,9 @@ def index():
 
     if request.method == 'POST':
         title = request.form['title']
-        new_title = Post(title)
         post = request.form['post']
-        new_post = Post(post)
-        new_blog = Post(new_title, new_post)
-        db.session.add(new_blog)
+        new_entry = Post(title, post)
+        db.session.add(new_entry)
         db.session.commit()
         
     return render_template('/add_blog.html', new_blog=new_blog)
