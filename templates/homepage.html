@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Blog Posts</h1>
+    {% for post in blog_post %}
+        <form method='get'>
+            <h1>{{post.title}}</h1>
+            <p>{{post.post}}</p>
+        </form>
+    {% endfor %}
+
+{% endblock %}
