@@ -17,38 +17,54 @@ class Post(db.Model):
         self.title = title
         self.post = post
 
+def filled_form(x):
+    if x:
+        return True
+    else:
+        return False
 
-@app.route('/blogs', methods=['GET'])
+
+@app.route('/blog', methods=['GET'])
 def all_blogs():
-    blog_post = Post.query.all()
+    select_id = request.args.get('id')
+    if (select_id):
+        select_post = Post.query.get(select_id)
+        return render_template('select_post.html', select_post=select_post)
+    else:
+        blog_post = Post.query.all()
+        return render_template('homepage.html', blog_post=blog_post)
 
-    return render_template('homepage.html', blog_post=blog_post)
-
-
-
-@app.route('/add_blog', methods=['POST', 'GET'])
+@app.route('/newpost', methods=['POST', 'GET'])
 def index():
 
-    new_blog = ''
+    title_error = ''
+    post_error = ''
+    title = ''
+    post = ''
 
     if request.method == 'POST':
         title = request.form['title']
         post = request.form['post']
+
+    if not filled_form(title) and not filled_form(post):
+        title_error = 'This field cannot be blank'
+        post_error = 'This field cannot be blank'
+        return render_template('newpost.html', title_error=title_error, post_error=post_error, title=title, post=post)
+
+    elif not filled_form(title):
+        title_error = 'This field cannot be blank'
+        return render_template('newpost.html', title_error=title_error, title=title, post=post)
+    
+    elif not filled_form(post):
+        post_error = 'This field cannot be blank'
+        return render_template('newpost.html', post_error=post_error, title=title, post=post)
+
+    else:
         new_entry = Post(title, post)
         db.session.add(new_entry)
         db.session.commit()
-        
-    return render_template('/add_blog.html', new_blog=new_blog)
-
-@app.route('/delete-post', methods=['POST'])
-def delete_post():
-
-    post_id = int(request.form['post-id'])
-    post = Post.query.get(post_id)
-    db.session.delete(post)
-    db.session.commit()
-
-    return redirect('/')
+        post_page = "/blog?id=" + str(new_entry.id)
+        return redirect(post_page)
 
 if __name__ == '__main__':
     app.run()
