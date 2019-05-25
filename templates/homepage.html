@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Build-a-Blog</h1>
+    <h1>Blogz</h1>
+
     {% for post in blog_post %}
         <form method='get'>
-            <h2><a href="/blog?id={{post.id}}">{{post.title}}</a></h2>
+            <h2><a href="/select?id={{post.id}}">{{post.title}}</a></h2>
             <p>{{post.post}}</p>
         </form>
     {% endfor %}
