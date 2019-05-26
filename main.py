@@ -45,9 +45,6 @@ def index():
 
 @app.route("/blog")
 def homepage():
-    if session:
-        owner = User.query.filter_by(username = session['username']).first()
-
     if "id" in request.args:
         post_id = request.args.get('id')
         blog = Blog.query.filter_by(id = post_id).all()
