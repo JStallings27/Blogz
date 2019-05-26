@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Log in to Blogz!</h1>
 <p>If you don't have an account, you may <a href="/signup">register</a> for one</p>
+<bod>
 <form action="/login" method="post">
     <table>
         <tr>
@@ -10,16 +11,15 @@
             <td>
                 <input name="username" value="{{ username }}">
             </td>
-            <p class="error">{{username_error}}</p>
         </tr>
         <tr>
             <td><label for="password">Password</label></td>
             <td>
                 <input name="password" type="password">
             </td>
-            <p class="error">{{password_error}}</p>
         </tr>
     </table>
     <input type="submit" value="Login">
 </form>
+</bod>
 {% endblock %}
