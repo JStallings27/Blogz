@@ -3,10 +3,9 @@
 {% block content %}
     <h1>Blogz</h1>
 
-    {% for post in blog_post %}
+    {% for user in users %}
         <form method='get'>
-            <h2><a href="/select?id={{post.id}}">{{post.title}}</a></h2>
-            <p>{{post.post}}</p>
+            <h2><a href="blog?user={{post.owner.id}}">{{post.owner.username}}</a></h2>
         </form>
     {% endfor %}
 

@@ -40,12 +40,26 @@ def require_login():
 @app.route("/")
 def index():
     users = User.query.all()
-    return render_template('index.html', users=users)
+    return render_template("index.html", users=users)
 
 @app.route("/blog")
 def homepage():
-    blog_post = Blog.query.all()
-    return render_template('homepage.html', blog_post=blog_post)
+    if session:
+        owner = User.query.filter_by(username = session['username']).first()
+
+    if "id" in request.args:
+        post_id = request.args.get('id')
+        blog = Blog.query.filter_by(id = post_id).all()
+        return render_template('blogs.html', blog = blog, post_id = post_id)
+
+    elif "user" in request.args:
+        user_id = request.args.get('user')
+        blog = Blog.query.filter_by(owner_id = user_id).all()
+        return render_template('blogs.html', blog = blog)
+
+    else:
+        blog = Blog.query.order_by(Blog.id.desc()).all()
+        return render_template('blogs.html', blog = blog)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -102,17 +116,6 @@ def signup():
     else:
         return render_template("signup.html")
 
-@app.route('/select', methods=['GET'])
-def select_blogs():
-    select_id = request.args.get('id')
-    if (select_id):
-        select_post = Blog.query.get(select_id)
-        return render_template('select_post.html', select_post=select_post)
-    else:
-        blog_post = Blog.query.all()
-        return render_template('select_post.html')
-
-
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
 
@@ -137,7 +140,7 @@ def newpost():
             new_entry = Blog(title, post, owner)
             db.session.add(new_entry)
             db.session.commit()
-            post_page = "/select?id=" + str(new_entry.id)
+            post_page = "/blog?id=" + str(new_entry.id)
             return redirect(post_page)
     else:
         return render_template("newpost.html")
